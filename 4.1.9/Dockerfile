@@ -27,6 +27,7 @@ RUN set -xe; \
     apk --update add --no-cache --virtual .runtime-deps \
         bash \
         gcc \
+        graphviz \
         libc-dev \
         libexecinfo \
         libgcc \
@@ -37,6 +38,7 @@ RUN set -xe; \
     chown varnish:varnish /varnish/version.txt; \
     apk add --no-cache --virtual .build-deps \
         alpine-sdk \
+        graphviz-dev \
         libexecinfo-dev \
         linux-headers \
         ncurses-dev \
@@ -56,6 +58,10 @@ RUN set -xe; \
     ./configure --prefix=/usr/local; \
     make; \
     make install; \
+    mkdir -p /usr/local/etc/varnish; \
+    cp -p ./etc/example.vcl /usr/local/etc/varnish/default.vcl; \
+    cp -p ./etc/devicedetect.vcl /usr/local/etc/varnish/; \
+    cp -p ./etc/builtin.vcl /usr/local/etc/varnish/; \
     cd /varnish; \
     rm -rf varnish-${VARNISH_VERSION}; \
     rm -rf /varnish/patches; \
