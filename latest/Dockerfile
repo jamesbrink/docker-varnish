@@ -26,7 +26,10 @@ COPY ./varnish.alpine.patch /varnish/
 RUN set -xe; \
     apk --update add --no-cache --virtual .runtime-deps \
         bash \
+        gcc \
+        libc-dev \
         libexecinfo \
+        libgcc \
         ncurses \
         pcre \
         readline; \
