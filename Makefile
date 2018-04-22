@@ -6,7 +6,7 @@ DOCKER_COMPOSE_TEMPLATE=docker-compose.template
 .PHONY: test all clean latest
 .DEFAULT_GOAL := latest
 
-all: latest
+all: latest 6.0.0 5.2.1
 
 latest:
 	mkdir -p $(@)
@@ -14,16 +14,44 @@ latest:
 	cp -rp hooks $(@)
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
-	sed -i -r 's/ARG TEMPLATE_VERSION.*/ARG TEMPLATE_VERSION="0.1.0"/g' $(@)/Dockerfile
+	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="6.0.0"/g' $(@)/Dockerfile
 	cp varnish.alpine.patch $(@)
-	# cd $(@) && TEMPLATE_VERSION="0.1.0" IMAGE_NAME=$(NAME):$(@) ./hooks/build
 	docker build -t $(NAME):$(@) $(@)
 
-test: test-latest
+6.0.0:
+	mkdir -p $(@)
+	cp -rp docker-assets $(@)
+	cp -rp hooks $(@)
+	cp Dockerfile.template $(@)/Dockerfile
+	cp .dockerignore $(@)/.dockerignore
+	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="$(@)"/g' $(@)/Dockerfile
+	cp varnish.alpine.patch $(@)
+	docker build -t $(NAME):$(@) $(@)
+
+5.2.1:
+	mkdir -p $(@)
+	cp -rp docker-assets $(@)
+	cp -rp hooks $(@)
+	cp Dockerfile.template $(@)/Dockerfile
+	cp .dockerignore $(@)/.dockerignore
+	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="$(@)"/g' $(@)/Dockerfile
+	cp varnish.alpine.patch $(@)
+	docker build -t $(NAME):$(@) $(@)
+
+
+test: test-latest test-6.0.0 test-5.2.1
 
 test-latest:
 	if [ "`docker run jamesbrink/varnish cat /etc/alpine-release`" != "3.7.0" ]; then exit 1;fi
-	docker run -it jamesbrink/varnish varnishd -V|grep --quiet "varnish-6.0.0"; if [ $$? -ne 0 ]; then exit 1;fi
+	docker run -it --rm jamesbrink/varnish varnishd -V|grep --quiet "varnish-6.0.0"; if [ $$? -ne 0 ]; then exit 1;fi
+
+test-6.0.0:
+	if [ "`docker run jamesbrink/varnish cat /etc/alpine-release`" != "3.7.0" ]; then exit 1;fi
+	docker run -it --rm jamesbrink/varnish:6.0.0 varnishd -V|grep --quiet "varnish-6.0.0"; if [ $$? -ne 0 ]; then exit 1;fi
+
+test-5.2.1:
+	if [ "`docker run jamesbrink/varnish cat /etc/alpine-release`" != "3.7.0" ]; then exit 1;fi
+	docker run -it --rm jamesbrink/varnish:5.2.1 varnishd -V|grep --quiet "varnish-5.2.1"; if [ $$? -ne 0 ]; then exit 1;fi
 
 clean:
-	rm -rf latest
+	rm -rf latest 6.0.0 5.2.1

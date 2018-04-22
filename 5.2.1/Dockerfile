@@ -3,7 +3,7 @@ FROM alpine:3.7
 # Build arguments.
 ARG VCS_REF
 ARG BUILD_DATE
-ARG VARNISH_VERSION="0.0.0"
+ARG VARNISH_VERSION="5.2.1"
 
 # Labels / Metadata.
 LABEL maintainer="James Brink, brink.james@gmail.com" \
