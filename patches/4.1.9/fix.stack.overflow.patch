@@ -11,8 +11,8 @@ allocating the epol_event array on heap instead of stack.
 
 diff --git a/bin/varnishd/waiter/cache_waiter_epoll.c b/bin/varnishd/waiter/cache_waiter_epoll.c
 index 71c426a..ccbc64c 100644
---- a/bin/varnishd/waiter/cache_waiter_epoll.c
-+++ b/bin/varnishd/waiter/cache_waiter_epoll.c
+--- ./bin/varnishd/waiter/cache_waiter_epoll.c
++++ ./bin/varnishd/waiter/cache_waiter_epoll.c
 @@ -74,7 +74,7 @@ struct vwe {
  static void *
  vwe_thread(void *priv)

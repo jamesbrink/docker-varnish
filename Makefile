@@ -16,7 +16,7 @@ latest:
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
 	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="6.0.0"/g' $(@)/Dockerfile
-	docker build -t $(NAME):$(@) $(@)
+	cd $(@) && docker build -t $(NAME):$(@) .
 
 6.0.0:
 	mkdir -p $(@)
@@ -26,7 +26,7 @@ latest:
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
 	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="$(@)"/g' $(@)/Dockerfile
-	docker build -t $(NAME):$(@) $(@)
+	cd $(@) && docker build -t $(NAME):$(@) .
 
 5.2.1:
 	mkdir -p $(@)
@@ -36,8 +36,7 @@ latest:
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
 	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="$(@)"/g' $(@)/Dockerfile
-	docker build -t $(NAME):$(@) $(@)
-
+	cd $(@) && docker build -t $(NAME):$(@) .
 
 4.1.9:
 	mkdir -p $(@)
@@ -47,7 +46,7 @@ latest:
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
 	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="$(@)"/g' $(@)/Dockerfile
-	docker build -t $(NAME):$(@) $(@)
+	cd $(@) && docker build -t $(NAME):$(@) .
 
 test: test-latest test-6.0.0 test-5.2.1 test-4.1.9
 
