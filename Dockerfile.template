@@ -20,7 +20,7 @@ RUN addgroup -g 1000 -S varnish \
     && adduser -u 1000 -S -h /varnish -s /bin/sh -G varnish varnish
 
 # Copy in needed patches
-COPY ./varnish.alpine.patch /varnish/
+COPY ./patches/ /varnish/patches
 
 # Install deps.
 RUN set -xe; \
@@ -49,14 +49,16 @@ RUN set -xe; \
     wget "https://varnish-cache.org/_downloads/varnish-${VARNISH_VERSION}.tgz"; \
     tar xfv varnish-${VARNISH_VERSION}.tgz; \
     rm varnish-${VARNISH_VERSION}.tgz; \
-    cd varnish-${VARNISH_VERSION}; \
-    patch -p0 < /varnish/varnish.alpine.patch; \
+    cd /varnish/varnish-${VARNISH_VERSION}; \
+    for p in /varnish/patches/*.patch; do \
+        patch -p0 <$p; \
+    done; \
     ./configure --prefix=/usr/local; \
     make; \
     make install; \
     cd /varnish; \
     rm -rf varnish-${VARNISH_VERSION}; \
-    rm varnish.alpine.patch; \
+    rm -rf /varnish/patches; \
     apk del .build-deps;
 
 

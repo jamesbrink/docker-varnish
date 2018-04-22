@@ -3,7 +3,7 @@
 NAME=jamesbrink/varnish
 TEMPLATE=Dockerfile.template
 DOCKER_COMPOSE_TEMPLATE=docker-compose.template
-.PHONY: test all clean latest
+.PHONY: test all clean latest 6.0.0 5.2.1 4.1.9
 .DEFAULT_GOAL := latest
 
 all: latest 6.0.0 5.2.1 4.1.9
@@ -12,30 +12,30 @@ latest:
 	mkdir -p $(@)
 	cp -rp docker-assets $(@)
 	cp -rp hooks $(@)
+	cp -rp patches/6.0.0/ $(@)/patches
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
 	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="6.0.0"/g' $(@)/Dockerfile
-	cp varnish.alpine.patch $(@)
 	docker build -t $(NAME):$(@) $(@)
 
 6.0.0:
 	mkdir -p $(@)
 	cp -rp docker-assets $(@)
 	cp -rp hooks $(@)
+	cp -rp patches/$(@)/ $(@)/patches
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
 	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="$(@)"/g' $(@)/Dockerfile
-	cp varnish.alpine.patch $(@)
 	docker build -t $(NAME):$(@) $(@)
 
 5.2.1:
 	mkdir -p $(@)
 	cp -rp docker-assets $(@)
 	cp -rp hooks $(@)
+	cp -rp patches/$(@)/ $(@)/patches
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
 	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="$(@)"/g' $(@)/Dockerfile
-	cp varnish.alpine.patch $(@)
 	docker build -t $(NAME):$(@) $(@)
 
 
@@ -43,10 +43,10 @@ latest:
 	mkdir -p $(@)
 	cp -rp docker-assets $(@)
 	cp -rp hooks $(@)
+	cp -rp patches/$(@)/ $(@)/patches
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
 	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="$(@)"/g' $(@)/Dockerfile
-	cp varnish.alpine.patch $(@)
 	docker build -t $(NAME):$(@) $(@)
 
 test: test-latest test-6.0.0 test-5.2.1 test-4.1.9
