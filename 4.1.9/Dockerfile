@@ -59,9 +59,7 @@ RUN set -xe; \
     make; \
     make install; \
     mkdir -p /usr/local/etc/varnish; \
-    cp -p ./etc/example.vcl /usr/local/etc/varnish/default.vcl; \
-    cp -p ./etc/devicedetect.vcl /usr/local/etc/varnish/; \
-    cp -p ./etc/builtin.vcl /usr/local/etc/varnish/; \
+    cp -p ./etc/*.vcl /usr/local/etc/varnish/; \
     cd /varnish; \
     rm -rf varnish-${VARNISH_VERSION}; \
     rm -rf /varnish/patches; \
@@ -75,7 +73,7 @@ COPY ./docker-assets /
 ENV PATH="/usr/local/bin:$PATH"
 
 # Drop down to our unprivileged user.
-USER varnish
+# USER varnish
 
 # Set our working directory.
 WORKDIR /varnish
