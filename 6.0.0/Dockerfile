@@ -28,6 +28,7 @@ RUN set -xe; \
         bash \
         gcc \
         graphviz \
+        libcap \
         libc-dev \
         libexecinfo \
         libgcc \
@@ -63,17 +64,18 @@ RUN set -xe; \
     cd /varnish; \
     rm -rf varnish-${VARNISH_VERSION}; \
     rm -rf /varnish/patches; \
+    setcap cap_net_bind_service=+ep /usr/local/sbin/varnishd; \
+    chown varnish:varnish /usr/local/var/varnish; \
     apk del .build-deps;
-
 
 # Copy our entrypoint into the container.
 COPY ./docker-assets /
 
 # Setup our environment variables.
-ENV PATH="/usr/local/bin:$PATH"
+ENV PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 
 # Drop down to our unprivileged user.
-# USER varnish
+USER varnish
 
 # Set our working directory.
 WORKDIR /varnish
