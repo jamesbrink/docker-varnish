@@ -1,23 +1,30 @@
-Only in include/: Makefile
---- varnish-6.0.0/include/vpf.h
-+++ include/vpf.h
-@@ -30,6 +30,8 @@
- #ifndef VPF_H_INCLUDED
- #define VPF_H_INCLUDED
-
-+#include <sys/stat.h>
-+
- struct vpf_fh;
-
- struct vpf_fh *VPF_Open(const char *path, mode_t mode, pid_t *pidptr);
---- varnish-6.0.0/include/vsb.h
-+++ include/vsb.h
-@@ -30,7 +30,7 @@
-
- #ifndef VSB_H_INCLUDED
- #define VSB_H_INCLUDED
--
+--- ./lib/libvarnishapi/vxp_lexer.c.orig
++++ ./lib/libvarnishapi/vxp_lexer.c
+@@ -33,6 +33,7 @@
+ #include <ctype.h>
+ #include <stdlib.h>
+ #include <string.h>
 +#include <sys/types.h>
- /*
-  * Structure definition
-  */
+ 
+ #include "vdef.h"
+ #include "vas.h"
+--- ./lib/libvarnishapi/vxp.c.orig
++++ ./lib/libvarnishapi/vxp.c
+@@ -33,6 +33,7 @@
+ #include <ctype.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <sys/types.h>
+ 
+ #include "vdef.h"
+ #include "vas.h"
+--- ./bin/varnishtest/vtc_barrier.c.orig
++++ ./bin/varnishtest/vtc_barrier.c
+@@ -35,6 +35,7 @@
+ #include <unistd.h>
+ 
+ #include <sys/socket.h>
++#include <sys/time.h>
+ 
+ #include "vtc.h"
+ #include "vtcp.h"

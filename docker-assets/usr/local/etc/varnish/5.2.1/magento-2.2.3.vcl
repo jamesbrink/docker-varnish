@@ -2,6 +2,8 @@
 vcl 4.0;
 
 import std;
+import saintmode;
+import directors;
 # The minimal Varnish version is 5.0
 # For SSL offloading, pass the following header in your proxy server or load balancer: 'X-Forwarded-Proto: https'
 
@@ -20,6 +22,20 @@ backend default {
 
 acl purge {
     "magento";
+    "varnish";
+    "127.0.0.1";
+    "0.0.0.0";
+}
+
+
+sub vcl_init {
+    new sm = saintmode.saintmode(default, 10);
+    new magedirector = directors.random();
+    magedirector.add_backend(sm.backend(), 1);
+}
+
+sub vcl_backend_fetch {
+    set bereq.backend = magedirector.backend();
 }
 
 sub vcl_recv {
@@ -131,6 +147,10 @@ sub vcl_hash {
 }
 
 sub vcl_backend_response {
+    if (beresp.status >= 500) { 
+      saintmode.blacklist(20s);
+      return (retry);
+    }
 
     set beresp.grace = 3d;
 

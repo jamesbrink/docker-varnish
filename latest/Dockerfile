@@ -3,7 +3,7 @@ FROM alpine:3.7
 # Build arguments.
 ARG VCS_REF
 ARG BUILD_DATE
-ARG VARNISH_VERSION="6.0.0"
+ARG VARNISH_VERSION="5.2.1"
 
 # Labels / Metadata.
 LABEL maintainer="James Brink, brink.james@gmail.com" \
@@ -62,11 +62,23 @@ RUN set -xe; \
     mkdir -p /usr/local/etc/varnish; \
     cp -p ./etc/*.vcl /usr/local/etc/varnish/; \
     cd /varnish; \
+    if [ "${VARNISH_VERSION}" != "6.0.0" ]; then \
+        wget https://download.varnish-software.com/varnish-modules/varnish-modules-0.13.0.tar.gz \
+        && tar xfvz varnish-modules-0.13.0.tar.gz \
+        && rm varnish-modules-0.13.0.tar.gz \
+        && cd varnish-modules-0.13.0 \
+        && ./configure --prefix=/usr/local \
+        && make \
+        && make install \
+        && cd /varnish/ \
+        && rm -rf varnish-modules-0.13.0; \
+    fi; \
     rm -rf varnish-${VARNISH_VERSION}; \
     rm -rf /varnish/patches; \
     setcap cap_net_bind_service=+ep /usr/local/sbin/varnishd; \
     chown varnish:varnish /usr/local/var/varnish; \
     apk del .build-deps;
+    
 
 # Copy our entrypoint into the container.
 COPY ./docker-assets /

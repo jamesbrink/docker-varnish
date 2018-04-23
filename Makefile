@@ -12,10 +12,10 @@ latest:
 	mkdir -p $(@)
 	cp -rp docker-assets $(@)
 	cp -rp hooks $(@)
-	cp -rp patches/6.0.0/ $(@)/patches
+	cp -rp patches/5.2.1/ $(@)/patches
 	cp Dockerfile.template $(@)/Dockerfile
 	cp .dockerignore $(@)/.dockerignore
-	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="6.0.0"/g' $(@)/Dockerfile
+	sed -i -r 's/ARG VARNISH_VERSION.*/ARG VARNISH_VERSION="5.2.1"/g' $(@)/Dockerfile
 	cd $(@) && docker build -t $(NAME):$(@) .
 
 6.0.0:
@@ -52,7 +52,7 @@ test: test-latest test-6.0.0 test-5.2.1 test-4.1.9
 
 test-latest:
 	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.7.0" ]; then exit 1;fi
-	docker run -it --rm jamesbrink/varnish varnishd -V|grep --quiet "varnish-6.0.0"; if [ $$? -ne 0 ]; then exit 1;fi
+	docker run -it --rm jamesbrink/varnish varnishd -V|grep --quiet "varnish-5.2.1"; if [ $$? -ne 0 ]; then exit 1;fi
 
 test-6.0.0:
 	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.7.0" ]; then exit 1;fi

@@ -22,22 +22,19 @@ backend default {
 
 acl purge {
     "magento";
+    "varnish";
+    "127.0.0.1";
+    "0.0.0.0";
 }
 
 
 sub vcl_init {
-    new sm = saintmode.saintmode(default1, 10);
-
-    # Add both to a director. Use sm0, sm1 in place of tile1, tile2.
-    # Other director types can be used in place of random.
+    new sm = saintmode.saintmode(default, 10);
     new magedirector = directors.random();
     magedirector.add_backend(sm.backend(), 1);
 }
 
 sub vcl_backend_fetch {
-    # Get a backend from the director.
-    # When returning a backend, the director will only return backends
-    # saintmode says are healthy.
     set bereq.backend = magedirector.backend();
 }
 
