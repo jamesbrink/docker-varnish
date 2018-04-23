@@ -22,9 +22,7 @@ backend default {
 
 acl purge {
     "magento";
-    "varnish";
     "127.0.0.1";
-    "0.0.0.0";
 }
 
 
