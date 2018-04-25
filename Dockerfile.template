@@ -77,6 +77,10 @@ RUN set -xe; \
     rm -rf /varnish/patches; \
     setcap cap_net_bind_service=+ep /usr/local/sbin/varnishd; \
     chown varnish:varnish /usr/local/var/varnish; \
+    wget https://github.com/jwilder/docker-gen/releases/download/0.7.4/docker-gen-linux-amd64-0.7.4.tar.gz; \
+    tar xfv docker-gen-linux-amd64-0.7.4.tar.gz; \
+    rm docker-gen-linux-amd64-0.7.4.tar.gz; \
+    mv ./docker-gen  /usr/local/bin/; \
     apk del .build-deps;
     
 
@@ -84,16 +88,14 @@ RUN set -xe; \
 COPY ./docker-assets /
 
 # Setup our environment variables.
-ENV PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+ENV PATH="/usr/local/bin:/usr/local/sbin:$PATH" \
+    VCL="magento-2.2.3"
 
 # Drop down to our unprivileged user.
-USER varnish
+# USER varnish
 
 # Set our working directory.
 WORKDIR /varnish
 
 # Set the entrypoint.
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-# Set the default command
-CMD ["/bin/bash"]

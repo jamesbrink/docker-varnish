@@ -6,9 +6,11 @@ import saintmode;
 import directors;
 # The minimal Varnish version is 5.0
 # For SSL offloading, pass the following header in your proxy server or load balancer: 'X-Forwarded-Proto: https'
-
-backend default {
-    .host = "magento";
+{{ range $host, $containers := groupByMulti $ "Env.BACKEND_HOST" "," }}
+{{ range $index, $value := $containers }}
+{{ $network := index $value.Networks 0 }}
+backend default_{{ $index }} {
+    .host = "{{ $network.IP }}";
     .port = "8080";
     .first_byte_timeout = 600s;
     .probe = {
@@ -17,27 +19,29 @@ backend default {
         .interval = 5s;
         .window = 10;
         .threshold = 5;
-   }
+    }
 }
+{{ end }}
+{{ end }}
+
 
 acl purge {
     "magento";
+    "127.0.0.1";
 }
 
 
 sub vcl_init {
-    new sm = saintmode.saintmode(default1, 10);
-
-    # Add both to a director. Use sm0, sm1 in place of tile1, tile2.
-    # Other director types can be used in place of random.
     new magedirector = directors.random();
-    magedirector.add_backend(sm.backend(), 1);
+    {{ range $host, $containers := groupByMulti $ "Env.BACKEND_HOST" "," }}
+    {{ range $index, $value := $containers }}
+    new sm_{{ $index }} = saintmode.saintmode(default_{{ $index }}, 10);
+    magedirector.add_backend(sm_{{ $index }}.backend(), 1);
+    {{ end }}
+    {{ end }}
 }
 
 sub vcl_backend_fetch {
-    # Get a backend from the director.
-    # When returning a backend, the director will only return backends
-    # saintmode says are healthy.
     set bereq.backend = magedirector.backend();
 }
 
