@@ -97,5 +97,7 @@ ENV PATH="/usr/local/bin:/usr/local/sbin:$PATH" \
 # Set our working directory.
 WORKDIR /varnish
 
+EXPOSE 80
+
 # Set the entrypoint.
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
