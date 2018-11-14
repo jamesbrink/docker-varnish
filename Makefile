@@ -51,19 +51,19 @@ latest:
 test: test-latest test-6.0.0 test-5.2.1 test-4.1.9
 
 test-latest:
-	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.7.0" ]; then exit 1;fi
+	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.8.1" ]; then exit 1;fi
 	docker run -it --rm jamesbrink/varnish varnishd -V|grep --quiet "varnish-5.2.1"; if [ $$? -ne 0 ]; then exit 1;fi
 
 test-6.0.0:
-	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.7.0" ]; then exit 1;fi
+	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.8.1" ]; then exit 1;fi
 	docker run -it --rm jamesbrink/varnish:6.0.0 varnishd -V|grep --quiet "varnish-6.0.0"; if [ $$? -ne 0 ]; then exit 1;fi
 
 test-5.2.1:
-	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.7.0" ]; then exit 1;fi
+	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.8.1" ]; then exit 1;fi
 	docker run -it --rm jamesbrink/varnish:5.2.1 varnishd -V|grep --quiet "varnish-5.2.1"; if [ $$? -ne 0 ]; then exit 1;fi
 
 test-4.1.9:
-	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.7.0" ]; then exit 1;fi
+	if [ "`docker run --rm jamesbrink/varnish cat /etc/alpine-release`" != "3.8.1" ]; then exit 1;fi
 	docker run -it --rm jamesbrink/varnish:4.1.9 varnishd -V|grep --quiet "varnish-4.1.9"; if [ $$? -ne 0 ]; then exit 1;fi
 
 clean:
